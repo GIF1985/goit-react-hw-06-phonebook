@@ -1,0 +1,23 @@
+.contactList {
+  list-style: none;
+  padding: 0;
+}
+
+.contactListItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.contactListItem:hover {
+  background-color: #f0f0f0;
+}
+
+.contactListItem .name {
+  font-weight: bold;
+}
+
+.contactListItem .email {
+  color: #888;
+}
