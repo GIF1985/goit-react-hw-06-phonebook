@@ -34,7 +34,7 @@ export function Form({ onData }) {
 
   const isValidName = value => {
     const nameRegex =
-      /^[a-zA-ZА-Яа-яЁё]+(([' \-][a-zA-ZА-Яа-яЁё ])?[a-zA-ZА-Яа-яЁё]*)*$/;
+      /^[a-zA-ZА-Яа-яЁё]+(([' -][a-zA-ZА-Яа-яЁё ])?[a-zA-ZА-Яа-яЁё]*)*$/;
     return nameRegex.test(value);
   };
 
