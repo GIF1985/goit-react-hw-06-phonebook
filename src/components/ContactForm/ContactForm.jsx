@@ -1,55 +1,89 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import styles from './ContactForm.module.css';
 
-const ContactForm = ({ onSubmit }) => {
-  const [contact, setContact] = useState({ name: '', number: '' });
-
-  const handleChange = event => {
-    const { name, value } = event.target;
-    setContact(prevState => ({ ...prevState, [name]: value }));
+export function Form({ onData }) {
+  const initialState = {
+    name: '',
+    number: '',
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    onSubmit(contact);
-    setContact({ name: '', number: '' });
+  const [state, setState] = useState({ ...initialState });
+  const { name, number } = state;
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
+    setState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    if (!isValidName(name) || !isValidNumber(number)) {
+      setErrorMessage('Invalid name or number');
+      return;
+    }
+
+    onData({ ...state });
+    setState({ ...initialState });
+    setErrorMessage('');
+  };
+
+  const isValidName = value => {
+    const nameRegex =
+      /^[a-zA-ZА-Яа-яЁё]+(([' \-][a-zA-ZА-Яа-яЁё ])?[a-zA-ZА-Яа-яЁё]*)*$/;
+    return nameRegex.test(value);
+  };
+
+  const isValidNumber = value => {
+    const numberRegex =
+      /^\+?[0-9]{1,3}[-\s]?\(?[0-9]{1,3}\)?[-\s]?[0-9]{1,4}[-\s]?[0-9]{1,4}[-\s]?[0-9]{1,9}$/;
+    return numberRegex.test(value);
   };
 
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
-      <label>
-        Name:
+      <div className={styles.fieldContainer}>
+        <label htmlFor="name" className={styles.label}>
+          Name
+        </label>
         <input
-          className={styles.input}
           type="text"
+          id="name"
           name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          value={name}
           required
-          value={contact.name}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Number:
-        <input
+          placeholder="Enter name"
           className={styles.input}
-          type="text"
-          name="number"
-          value={contact.number}
           onChange={handleChange}
         />
-      </label>
-      <button className={styles.button} type="submit">
-        Add Contact
+      </div>
+      <div className={styles.fieldContainer}>
+        <label htmlFor="number" className={styles.label}>
+          Number
+        </label>
+        <input
+          type="tel"
+          id="number"
+          name="number"
+          value={number}
+          required
+          placeholder="Enter number"
+          className={styles.input}
+          onChange={handleChange}
+        />
+      </div>
+      {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+      <button
+        type="submit"
+        disabled={!name || !number}
+        className={styles.button}
+      >
+        Add contact
       </button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
-
-export default ContactForm;
+}

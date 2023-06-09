@@ -1,27 +1,30 @@
-import React, { useCallback } from 'react';
-import ContactListItemWithDelete from '../ContactListItemWithDelete/ContactListItemWithDelete';
+import PropTypes from 'prop-types';
 import styles from './ContactList.module.css';
 
-const ContactList = ({ contacts, onDeleteContact }) => {
-  const handleDeleteContact = useCallback(
-    id => {
-      onDeleteContact(id);
-    },
-    [onDeleteContact]
-  );
-
+export const ContactList = ({ contacts, onDeleteContact }) => {
   return (
-    <ul className={styles.contactList}>
-      {contacts.map(contact => (
-        <ContactListItemWithDelete
-          key={contact.id}
-          contact={contact}
-          onDelete={handleDeleteContact}
-          className={styles.contactListItem}
-        />
+    <div className={styles.contactContainer}>
+      {contacts.map(({ id, name, number, createdAt }) => (
+        <div key={id} className={styles.contactItem}>
+          <span className={styles.contactName}>{name}: </span>
+          <span>{number}</span>
+          <span className={styles.contactCreatedAt}>
+            Created: {new Date(createdAt).toLocaleString()}
+          </span>
+          <button
+            type="button"
+            className={styles.contactButton}
+            onClick={() => onDeleteContact(id)}
+          >
+            Delete
+          </button>
+        </div>
       ))}
-    </ul>
+    </div>
   );
 };
 
-export default ContactList;
+ContactList.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  onDeleteContact: PropTypes.func.isRequired,
+};
